@@ -16,7 +16,7 @@ func main() {
 	ll.Add(212)
 	fmt.Println(ll)
 
-	fmt.Println(ll.Index(2))
+	fmt.Println(ll.Index(1))
 	fmt.Println(ll.Index(220))
 
 	ll.Reverse()
