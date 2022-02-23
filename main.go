@@ -1,24 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/matt-d-nelson/linkedlist/linkedlist"
 )
 
 func main() {
-	var ll linkedlist.LinkedList
-	fmt.Println(ll.String())
-	ll.Add("foo")
-	fmt.Println(ll.String())
-	ll.Add("bar")
-	fmt.Println(ll.String())
-	ll.Add(212)
-	fmt.Println(ll)
-
-	fmt.Println(ll.Index(1))
-	fmt.Println(ll.Index(220))
-
-	ll.Reverse()
-	fmt.Println(ll)
+	var coll linkedlist.LinkedList
+	api := &linkedlist.APIQueue{
+		Store: &coll,
+	}
+	http.ListenAndServe(":8080", api)
 }

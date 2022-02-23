@@ -1,5 +1,5 @@
 //Temp package change
-package main
+package linkedlist
 
 import (
 	"encoding/json"
@@ -52,10 +52,12 @@ func (ll *LinkedList) Read(i int) (Node, error) {
 type Collection interface {
 	Add(v interface{}) error
 	Read(i int) (Node, error)
+	String() string
+	Reverse()
 }
 
 type APIQueue struct {
-	store Collection
+	Store Collection
 }
 
 func (ll *LinkedList) Reverse() {
@@ -85,7 +87,7 @@ func (q *APIQueue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/add":
 		//Changed so all values added are strings
 		v := r.URL.Query().Get("value")
-		if err := q.store.Add(v); err != nil {
+		if err := q.Store.Add(v); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -97,22 +99,23 @@ func (q *APIQueue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		v, err := q.store.Read(idx)
+		v, err := q.Store.Read(idx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{"value": v.Value})
+	case "/listAll":
+		msg := q.Store.String()
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{"list": msg})
+	case "/reverse":
+		q.Store.Reverse()
+		msg := q.Store.String()
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{"list reversed": msg})
 	default:
 		http.Error(w, fmt.Sprintf("path %v undefined", r.URL.Path), http.StatusBadRequest)
 	}
-}
-
-func main() {
-	var coll LinkedList
-	api := &APIQueue{
-		store: &coll,
-	}
-	http.ListenAndServe(":8080", api)
 }
