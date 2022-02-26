@@ -23,8 +23,8 @@ type LinkedList struct {
 	Tail *Node
 }
 
-//Add error return
-func (ll *LinkedList) Add(v interface{}) error {
+//Change to return v int, error
+func (ll *LinkedList) Add(v int) error {
 	node := Node{Value: v}
 	if ll.Head == nil {
 		ll.Head = &node
@@ -37,6 +37,7 @@ func (ll *LinkedList) Add(v interface{}) error {
 	return nil
 }
 
+//Change to return int, string
 func (ll *LinkedList) Read(i int) (Node, error) {
 	curr := 0
 	n := ll.Head
@@ -50,7 +51,7 @@ func (ll *LinkedList) Read(i int) (Node, error) {
 }
 
 type Collection interface {
-	Add(v interface{}) error
+	Add(v int) error
 	Read(i int) (Node, error)
 	String() string
 	Reverse()
@@ -86,7 +87,11 @@ func (q *APIQueue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/add":
 		//Changed so all values added are strings
-		v := r.URL.Query().Get("value")
+		v, err := strconv.Atoi(r.URL.Query().Get("value"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		if err := q.Store.Add(v); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
