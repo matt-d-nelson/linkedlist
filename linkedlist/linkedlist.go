@@ -38,7 +38,7 @@ func (ll *LinkedList) Add(v int) error {
 }
 
 //Change to return int, string
-func (ll *LinkedList) Read(i int) (Node, error) {
+func (ll *LinkedList) Index(i int) (Node, error) {
 	curr := 0
 	n := ll.Head
 	for ; curr < i && n != nil; curr++ {
@@ -52,7 +52,7 @@ func (ll *LinkedList) Read(i int) (Node, error) {
 
 type Collection interface {
 	Add(v int) error
-	Read(i int) (Node, error)
+	Index(i int) (Node, error)
 	String() string
 	Reverse()
 }
@@ -104,7 +104,7 @@ func (q *APIQueue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		v, err := q.Store.Read(idx)
+		v, err := q.Store.Index(idx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
