@@ -9,7 +9,7 @@ import (
 )
 
 type Node struct {
-	Value interface{}
+	Value int
 	Next  *Node
 	Prev  *Node
 }
@@ -38,21 +38,21 @@ func (ll *LinkedList) Add(v int) error {
 }
 
 //Change to return int, string
-func (ll *LinkedList) Index(i int) (Node, error) {
+func (ll *LinkedList) Index(i int) (int, error) {
 	curr := 0
 	n := ll.Head
 	for ; curr < i && n != nil; curr++ {
 		n = n.Next
 	}
 	if curr != i || n == nil {
-		return Node{}, fmt.Errorf("linkedlist: %d is beyond length of list (%d)", i, curr)
+		return -1, fmt.Errorf("linkedlist: %d is beyond length of list (%d)", i, curr)
 	}
-	return *n, nil
+	return n.Value, nil
 }
 
 type Collection interface {
 	Add(v int) error
-	Index(i int) (Node, error)
+	Index(i int) (int, error)
 	String() string
 	Reverse()
 }
