@@ -110,7 +110,7 @@ func (q *APIQueue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]interface{}{"value": v.Value})
+		json.NewEncoder(w).Encode(map[string]interface{}{"value": v})
 	case "/listAll":
 		msg := q.Store.String()
 		w.WriteHeader(http.StatusOK)
